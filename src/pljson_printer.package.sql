@@ -253,10 +253,10 @@ create or replace package body pljson_printer as
           add_to_clob(buf, buf_str, llcheck('null'));
         when 'array' then
           add_to_clob(buf, buf_str, llcheck('['));
-          ppEA(pljson_list(elem), indent, buf, spaces, buf_str);
+          ppEA(treat(elem.get_object as json_list), indent, buf, spaces, buf_str);
           add_to_clob(buf, buf_str, llcheck(']'));
         when 'object' then
-          ppObj(pljson(elem), indent, buf, spaces, buf_str);
+          ppObj(treat(elem.get_object as json), indent, buf, spaces, buf_str);
         else add_to_clob(buf, buf_str, llcheck(elem.get_type));
       end case;
       end if;
@@ -290,10 +290,10 @@ create or replace package body pljson_printer as
         add_to_clob(buf, buf_str, llcheck('null'));
       when 'array' then
         add_to_clob(buf, buf_str, llcheck('['));
-        ppEA(pljson_list(mem), indent, buf, spaces, buf_str);
+        ppEA(treat(mem.get_object as json_list), indent, buf, spaces, buf_str);
         add_to_clob(buf, buf_str, llcheck(']'));
       when 'object' then
-        ppObj(pljson(mem), indent, buf, spaces, buf_str);
+        ppObj(treat(mem.get_object as json), indent, buf, spaces, buf_str);
       else add_to_clob(buf, buf_str, llcheck(mem.get_type));
     end case;
   end ppMem;
@@ -366,10 +366,10 @@ create or replace package body pljson_printer as
       when 'null' then
         add_to_clob(buf, buf_str, 'null');
       when 'array' then
-        pretty_print_list(pljson_list(json_part), spaces, buf, line_length);
+        pretty_print_list(treat(json_part.get_object as json_list), spaces, buf, line_length);
         return;
       when 'object' then
-        pretty_print(pljson(json_part), spaces, buf, line_length);
+        pretty_print(treat(json_part.get_object as json), spaces, buf, line_length);
         return;
       else add_to_clob(buf, buf_str, 'unknown type:'|| json_part.get_type);
     end case;
@@ -454,10 +454,10 @@ create or replace package body pljson_printer as
           add_buf (buf, llcheck('null'));
         when 'array' then
           add_buf( buf, llcheck('['));
-          ppEA(pljson_list(elem), indent, buf, spaces);
+          ppEA(treat(elem.get_object as json_list), indent, buf, spaces);
           add_buf( buf, llcheck(']'));
         when 'object' then
-          ppObj(pljson(elem), indent, buf, spaces);
+          ppObj(treat(elem.get_object as json), indent, buf, spaces);
         else add_buf (buf, llcheck(elem.get_type)); /* should never happen */
       end case;
       end if;
@@ -490,10 +490,10 @@ create or replace package body pljson_printer as
         add_buf(buf, llcheck('null'));
       when 'array' then
         add_buf(buf, llcheck('['));
-        ppEA(pljson_list(mem), indent, buf, spaces);
+        ppEA(treat(mem.get_object as json_list), indent, buf, spaces);
         add_buf(buf, llcheck(']'));
       when 'object' then
-        ppObj(pljson(mem), indent, buf, spaces);
+        ppObj(treat(mem.get_object as json), indent, buf, spaces);
       else add_buf(buf, llcheck(mem.get_type)); /* should never happen */
     end case;
   end ppMem;
@@ -548,9 +548,9 @@ create or replace package body pljson_printer as
       when 'null' then
         buf := 'null';
       when 'array' then
-        buf := pretty_print_list(pljson_list(json_part), spaces, line_length);
+        buf := pretty_print_list(treat(json_part.get_object as json_list), spaces, line_length);
       when 'object' then
-        buf := pretty_print(pljson(json_part), spaces, line_length);
+        buf := pretty_print(treat(json_part.get_object as json), spaces, line_length);
       else buf := 'weird error: '|| json_part.get_type;
     end case;
     return buf;

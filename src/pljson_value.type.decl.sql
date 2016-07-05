@@ -1,4 +1,4 @@
-create or replace type pljson_value as object
+create or replace type pljson_value force as object
 (
   /*
   Copyright (c) 2010 Jonas Krogsboell
@@ -25,14 +25,14 @@ create or replace type pljson_value as object
   typeval number(1), /* 1 = object, 2 = array, 3 = string, 4 = number, 5 = bool, 6 = null */
   str varchar2(32767),
   num number, /* store 1 as true, 0 as false */
-  object_or_array sys.anydata, /* object or array in here */
+  object_or_array pljson_object, /* object or array in here */
   extended_str clob,
   
   /* mapping */
   mapname varchar2(4000),
   mapindx number(32),
   
-  constructor function pljson_value(object_or_array sys.anydata) return self as result,
+  constructor function pljson_value(object_or_array pljson_object) return self as result,
   constructor function pljson_value(str varchar2, esc boolean default true) return self as result,
   constructor function pljson_value(str clob, esc boolean default true) return self as result,
   constructor function pljson_value(num number) return self as result,
@@ -46,6 +46,7 @@ create or replace type pljson_value as object
   member function get_number return number,
   member function get_bool return boolean,
   member function get_null return varchar2,
+  member function get_object return pljson_object,
   
   member function is_object return boolean,
   member function is_array return boolean,

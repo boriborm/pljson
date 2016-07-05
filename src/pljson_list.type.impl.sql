@@ -25,25 +25,28 @@ create or replace type body pljson_list as
   constructor function pljson_list return self as result as
   begin
     self.list_data := pljson_value_array();
+    self.obj_type:=2;
     return;
   end;
   
   constructor function pljson_list(str varchar2) return self as result as
   begin
     self := pljson_parser.parse_list(str);
+    self.obj_type:=2;
     return;
   end;
   
   constructor function pljson_list(str clob) return self as result as
   begin
     self := pljson_parser.parse_list(str);
+    self.obj_type:=2;
     return;
   end;
   
   constructor function pljson_list(cast pljson_value) return self as result as
-    x number;
   begin
-    x := cast.object_or_array.getobject(self);
+    self:= treat(cast.object_or_array as json_list);
+    self.obj_type:=2;
     return;
   end;
   
@@ -212,7 +215,7 @@ create or replace type body pljson_list as
     t pljson_list;
   begin
     if(self.count > 0) then
-      t := pljson_list(self.list_data);
+      t := pljson_list(self.to_json_value);
       t.remove(1);
       return t;
     else return pljson_list(); end if;
@@ -354,7 +357,7 @@ create or replace type body pljson_list as
   
   member function to_json_value return pljson_value as
   begin
-    return pljson_value(sys.anydata.convertobject(self));
+    return pljson_value(self);
   end;
   
   /* --backwards compatibility

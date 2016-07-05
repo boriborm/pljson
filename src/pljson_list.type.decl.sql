@@ -1,4 +1,4 @@
-create or replace type pljson_list as object (
+create or replace type pljson_list force under pljson_object (
   /*
   Copyright (c) 2010 Jonas Krogsboell
 

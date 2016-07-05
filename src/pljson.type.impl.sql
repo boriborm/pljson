@@ -25,6 +25,7 @@ create or replace type body pljson as
   constructor function pljson return self as result as
   begin
     self.json_data := pljson_value_array();
+    self.obj_type:=1;
     self.check_for_duplicate := 1;
     return;
   end;
@@ -32,6 +33,7 @@ create or replace type body pljson as
   constructor function pljson(str varchar2) return self as result as
   begin
     self := pljson_parser.parser(str);
+    self.obj_type:=1;
     self.check_for_duplicate := 1;
     return;
   end;
@@ -39,14 +41,15 @@ create or replace type body pljson as
   constructor function pljson(str in clob) return self as result as
   begin
     self := pljson_parser.parser(str);
+    self.obj_type:=1;
     self.check_for_duplicate := 1;
     return;
   end;
   
   constructor function pljson(cast pljson_value) return self as result as
-    x number;
   begin
-    x := cast.object_or_array.getobject(self);
+    self:=treat(cast.object_or_array as json);
+    self.obj_type:=1;
     self.check_for_duplicate := 1;
     return;
   end;
@@ -61,6 +64,7 @@ create or replace type body pljson as
     end loop;
   
     self.json_data := l.list_data;
+    self.obj_type:=1;
     self.check_for_duplicate := 1;
     return;
   end;
@@ -309,7 +313,7 @@ create or replace type body pljson as
   
   member function to_json_value return pljson_value as
   begin
-    return pljson_value(sys.anydata.convertobject(self));
+    return pljson_value(self);
   end;
   
   /* json path */
