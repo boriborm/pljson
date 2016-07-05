@@ -5,9 +5,8 @@ create or replace type body pljson_value as
     case object_or_array.obj_type
       when 1 then self.typeval := 1;
       when 2 then self.typeval := 2;
-      else raise_application_error(-20102, 'JSON_Value init error (JSON or JSON\_List allowed)');
+      else raise_application_error(-20102, 'PLJSON_Value init error (PLJSON or PLJSON_LIST allowed)');
     end case;
-    self.object_or_array := object_or_array;
     self.object_or_array := object_or_array;
     if(self.object_or_array is null) then self.typeval := 6; end if;
     
