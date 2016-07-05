@@ -19,25 +19,31 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
   */
-CREATE TABLE "JSON_TESTSUITE" (
-  "COLLECTION" VARCHAR2(20 BYTE), 
-  "PASSED" NUMBER, 
-  "FAILED" NUMBER, 
-  "TOTAL" NUMBER, 
-  "FILENAME" VARCHAR2(20 BYTE)
-);  
+
+PROMPT run with NLS_LANG='AMERICAN_AMERICA.AL32UTF8'
+
+CREATE TABLE pljson_testsuite (
+  COLLECTION VARCHAR2(30 BYTE),
+  PASSED NUMBER,
+  FAILED NUMBER,
+  TOTAL NUMBER,
+  FILENAME VARCHAR2(30 BYTE)
+);
 
 --run each test here
-@jsonparsertest.sql
-@json_test.sql
-@json_list_test.sql
-@simple_test.sql
-@ext_test.sql
-@jsonpath.sql
-@json_helper_test.sql
+@@pljson_parser.test.sql
+@@pljson.test.sql
+@@pljson_list.test.sql
+@@pljson_simple.test.sql
+@@pljson_ext.test.sql
+@@pljson_path.test.sql
+@@pljson_helper.test.sql
+@@pljson_unicode.test.sql
 
 PROMPT Unit-testing of PLJSON implementation:
-select * from json_testsuite;
---select 'All tests', sum(passed), sum(failed), sum(total), ' ' from json_testsuite;
-drop table json_testsuite;
-
+COLUMN PASSED HEADING 'PASS' FORMAT 999
+COLUMN FAILED HEADING 'FAIL' FORMAT 999
+COLUMN TOTAL  HEADING 'TOT'  FORMAT 999
+select * from pljson_testsuite;
+--select 'All tests', sum(passed), sum(failed), sum(total), ' ' from pljson_testsuite;
+drop table pljson_testsuite;

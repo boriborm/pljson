@@ -34,23 +34,41 @@ PROMPT -----------------------------------;
 PROMPT -- Compiling objects for PL/JSON --;
 PROMPT -----------------------------------;
 @@uninstall.sql
-@@src/json_value.typ
-@@src/json_list.typ
-@@src/json.typ
-@@src/json_parser.sql
-@@src/json_printer.sql
-@@src/json_value_body.typ
-@@src/json_ext.sql --extra helper functions
-@@src/json_body.typ
-@@src/json_list_body.typ
+
+@@src/pljson_value.type.decl.sql
+@@src/pljson_list.type.decl.sql
+@@src/pljson.type.decl.sql
+@@src/pljson_parser.package.sql
+@@src/pljson_printer.package.sql
+@@src/pljson_value.type.impl.sql
+@@src/pljson_ext.package.sql --extra helper functions
+@@src/pljson.type.impl.sql
+@@src/pljson_list.type.impl.sql
 --@@src/grantsandsynonyms.sql --grants to core API
-@@src/json_ac.sql --Wrapper to enhance autocompletion
+@@src/pljson_autocomplete.package.sql --Wrapper to enhance autocompletion
 
 PROMPT ------------------------------------------;
 PROMPT -- Adding optional packages for PL/JSON --;
 PROMPT ------------------------------------------;
-@@src/addons/json_dyn.sql --dynamic sql execute 
-@@src/addons/jsonml.sql --jsonml (xml to json)
-@@src/addons/json_xml.sql --json to xml copied from http://www.json.org/java/org/json/XML.java
-@@src/addons/json_util_pkg.sql --dynamic sql from http://ora-00001.blogspot.com/2010/02/ref-cursor-to-json.html
-@@src/addons/json_helper.sql --Set operations on JSON and JSON_LIST
+@@src/addons/pljson_dynamic_sql.package.sql --dynamic sql execute
+@@src/addons/pljson_ml.package.sql --jsonml (xml to json)
+@@src/addons/pljson_xml.package.sql --json to xml copied from http://www.json.org/java/org/json/XML.java
+@@src/addons/pljson_util.package.sql --dynamic sql from http://ora-00001.blogspot.com/2010/02/ref-cursor-to-json.html
+@@src/addons/pljson_helper.package.sql --Set operations on JSON and JSON_LIST
+@@src/addons/pljson_table.type.decl.sql -- dynamic table from json document
+@@src/addons/pljson_table.type.impl.sql -- dynamic table from json document
+-- synonyms for backwards compatibility
+create synonym json_parser for pljson_parser;
+create synonym json_printer for pljson_printer;
+create synonym json_ext for pljson_ext;
+create synonym json_dyn for pljson_dyn;
+create synonym json_ml for pljson_ml;
+create synonym json_xml for pljson_xml;
+create synonym json_util_pkg for pljson_util_pkg;
+create synonym json_helper for pljson_helper;
+create synonym json_ac for pljson_ac;
+create synonym json for pljson;
+create synonym json_list for pljson_list;
+create synonym json_value_array for pljson_value_array;
+create synonym json_value for pljson_value;
+create synonym json_table for pljson_table;
